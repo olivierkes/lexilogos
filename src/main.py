@@ -9,6 +9,7 @@ import sys
 from PyQt4 import QtGui
 
 from MainWindow import MainWindow
+from Game import Game
 
 
 def main():

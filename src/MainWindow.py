@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QMainWindow
-from ui.Ui_MainWindow import Ui_MainWindow
+from PyQt4.QtGui import QMainWindow, QPushButton
+from ui.MainWindow import Ui_MainWindow
+from Game import Game
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
@@ -14,9 +15,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Hide some stuff
         self.pushButton_moreOptions.setChecked(False)
-        self.pushButton_cheatText.setChecked(False)
 
+        self.loadGame()
 
         # Display
         self.show()
+
+    def loadGame(self):
+        self.game = Game()
+        self.setCentralWidget(self.game)
+
 
