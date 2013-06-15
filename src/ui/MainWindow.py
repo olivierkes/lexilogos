@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sat Jun 15 15:27:43 2013
+# Created: Sat Jun 15 23:36:49 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -122,7 +122,6 @@ class Ui_MainWindow(object):
         self.verticalLayout_4.addLayout(self.verticalLayout_3)
         self.verticalLayout_7.addWidget(self.groupBox)
         self.groupBox_4 = QtGui.QGroupBox(self.widget)
-        self.groupBox_4.setEnabled(False)
         self.groupBox_4.setTitle(_fromUtf8(""))
         self.groupBox_4.setObjectName(_fromUtf8("groupBox_4"))
         self.formLayout_2 = QtGui.QFormLayout(self.groupBox_4)

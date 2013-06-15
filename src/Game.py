@@ -13,11 +13,14 @@ class myHighlighter(QSyntaxHighlighter):
         self._game = game
 
     def highlightBlock(self, text):
-        s = self._game.listWidget_original.selectedItems()
 
+        # Do we have a word selected in the list?
+        # TODO: maybe we should do that only if we are displaying the specifical
+        #       form, and not the lexicon one, because it won't work and it
+        #       helps too much.
+        s = self._game.listWidget_original.selectedItems()
         if len(s) > 0:
             word = s[0].text()
-
             pos = text.find(word)
             f = QTextCharFormat()
             f.setFontWeight(QFont.Bold)
@@ -25,8 +28,9 @@ class myHighlighter(QSyntaxHighlighter):
 
             while pos >= 0:
                 # We get sure we are not simply highlighting within a word
-                if text[pos - 1: pos] == " " or \
-                   text[pos + len(word):pos + len(word) + 1] == " ":
+                if text[pos - 1: pos] == " " and \
+                   text[pos + len(word):pos + len(word) + 1] == " " or \
+                   pos == 0 or pos + len(word) == len(text):
                     self.setFormat(pos, len(word), f)
                 pos = text.find(word, pos + 1)
 
@@ -51,6 +55,10 @@ class Game(QWidget, Ui_Game):
         self.BibleLoader = parent.BibleLoader
         self._startTime = QTime.currentTime()
         self._wordsGuessed = []
+        self._parent = parent
+        self._words = []
+        self._strongs = []
+        self._grammars = []
 
         self._highlighter = myHighlighter(self.plainTextEdit_original, self)
 
@@ -61,7 +69,6 @@ class Game(QWidget, Ui_Game):
         # While debugging
         self.listWidget_original.setSortingEnabled(False)
         self.listWidget_translation.setSortingEnabled(False)
-
 
         self.loadText()
 
@@ -76,7 +83,6 @@ class Game(QWidget, Ui_Game):
         if len(r) > 0:
             self.listWidget_original.setCurrentItem(r[0])
 
-
         #self.plainTextEdit_original.setTextCursor(c)
 
     def loadText(self):
@@ -88,23 +94,23 @@ class Game(QWidget, Ui_Game):
                                                    i) + " "
             text += v
 
-        print(text)
-
-        #TODO: enlever les doublons
-        # but we need to either remove doubles in words list, and then
-        # adapt the strong list, or the opposite. Otherwise, we won't get
-        # the same number of items on each list.
-
-        self._words = [w for (w, s, g) in text]
-        self._strongs = [s for (w, s, g) in text]
-        self._grammars = [g for (w, s, g) in text]
+        # Removes doubles. Either in one list or the other, according to
+        # the setting (displaying the specifical form, or the lexicon form)
+        for (w, s, g) in text:
+            if self._parent.comboBox_testLexicalForm.currentIndex() == 0 \
+               and not w in self._words:
+                self._words.append(w)
+                self._strongs.append(s)
+                self._grammars.append(g)
+            elif self._parent.comboBox_testLexicalForm.currentIndex() == 1 \
+                 and not s in self._strongs:
+                self._words.append(w)
+                self._strongs.append(s)
+                self._grammars.append(g)
 
         self.plainTextEdit_original.setPlainText(t)
         self.populateListOriginal()
         self.populateListTranslation()
-
-    def removeDoubles(self, array):
-        return list(set(array))
 
     def populateListOriginal(self):
         self.listWidget_original.clear()

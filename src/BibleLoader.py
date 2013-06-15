@@ -85,8 +85,13 @@ class BibleLoader():
         r.setMinimal(True)
         pos = r.indexIn(text)
         while pos >= 0:
+            # Some verbs have two strong numbers, we keep only the first,
+            # the second one being grammar
+            strong = r.cap(2).strip()
+            if " " in strong:
+                strong = strong.split(" ")[0]
             result.append((r.cap(1).strip(),
-                           r.cap(2).strip(),
+                           strong,
                            r.cap(3).strip()))
             pos = r.indexIn(text, pos + len(r.cap(0)))
         return result
