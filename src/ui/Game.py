@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Game.ui'
 #
-# Created: Sat Jun 15 14:54:42 2013
+# Created: Sat Jun 15 15:27:43 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -43,6 +43,9 @@ class Ui_Game(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.plainTextEdit_original.sizePolicy().hasHeightForWidth())
         self.plainTextEdit_original.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.plainTextEdit_original.setFont(font)
         self.plainTextEdit_original.setReadOnly(True)
         self.plainTextEdit_original.setPlainText(_fromUtf8(""))
         self.plainTextEdit_original.setBackgroundVisible(False)
@@ -55,6 +58,9 @@ class Ui_Game(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.plainTextEdit_version.sizePolicy().hasHeightForWidth())
         self.plainTextEdit_version.setSizePolicy(sizePolicy)
+        font = QtGui.QFont()
+        font.setPointSize(11)
+        self.plainTextEdit_version.setFont(font)
         self.plainTextEdit_version.setReadOnly(True)
         self.plainTextEdit_version.setObjectName(_fromUtf8("plainTextEdit_version"))
         self.horizontalLayout_8.addWidget(self.plainTextEdit_version)
@@ -114,6 +120,8 @@ class Ui_Game(object):
         Game.setWindowTitle(_translate("Game", "Form", None))
         self.pushButton_cheatText.setText(_translate("Game", "?", None))
         self.groupBox_5.setTitle(_translate("Game", "Answers", None))
+        self.listWidget_original.setSortingEnabled(True)
+        self.listWidget_translation.setSortingEnabled(True)
         self.pushButton_4.setText(_translate("Game", "→", None))
         self.pushButton_3.setText(_translate("Game", "←", None))
         self.pushButton_Validate.setText(_translate("Game", "Validate", None))
