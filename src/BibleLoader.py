@@ -72,6 +72,29 @@ class BibleLoader():
 
         return result
 
+    def parseVerse(self, book, chapter, verse):
+        return self.parse(self.getVerse(book, chapter, verse))
+
+    def parse(self, text):
+        result = []
+        r = QRegExp(r'([αβχδεφγηιϕκλμνοπθρστυςωξψζ]*)' +
+                     '\s*' +
+                     '([\d ]+)' +
+                     '\s*' +
+                     '\{(.*)\}\s*')
+        r.setMinimal(True)
+        pos = r.indexIn(text)
+        while pos >= 0:
+            result.append((r.cap(1).strip(),
+                           r.cap(2).strip(),
+                           r.cap(3).strip()))
+            pos = r.indexIn(text, pos + len(r.cap(0)))
+        return result
+
+    def getVerseTextOnly(self, bookNumber, chapterNumber, verseNumber):
+        v = self.getVerse(bookNumber, chapterNumber, verseNumber)
+        return " ".join([i[0] for i in self.parse(v)])
+
     def getBook(self, bookNumber):
         return self._books[bookNumber]
 

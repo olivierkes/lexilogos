@@ -49,6 +49,12 @@
      </item>
      <item>
       <widget class="QPlainTextEdit" name="plainTextEdit_version">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="readOnly">
         <bool>true</bool>
        </property>
@@ -69,19 +75,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <spacer name="verticalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Vertical</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>20</width>
-           <height>40</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
       </layout>
      </item>
     </layout>
@@ -95,10 +88,10 @@
       <item>
        <layout class="QHBoxLayout" name="horizontalLayout_6">
         <item>
-         <widget class="QListView" name="listView_3"/>
+         <widget class="QListWidget" name="listWidget_original"/>
         </item>
         <item>
-         <widget class="QListView" name="listView"/>
+         <widget class="QListWidget" name="listWidget_translation"/>
         </item>
         <item>
          <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -145,7 +138,7 @@
          </layout>
         </item>
         <item>
-         <widget class="QListView" name="listView_2"/>
+         <widget class="QListWidget" name="listWidget_results"/>
         </item>
        </layout>
       </item>

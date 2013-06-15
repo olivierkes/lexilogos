@@ -24,14 +24,37 @@ class Game(QWidget, Ui_Game):
         self._verseTo = verseTo
         self.BibleLoader = parent.BibleLoader
         self._startTime = QTime.currentTime()
+        self._wordsGuessed = []
 
         self.loadText()
 
 
     def loadText(self):
+        text = []
         t = ""
         for i in range(self._verseFrom, self._verseTo + 1):
-            print(self._verseFrom, self._verseTo + 1)
-            t += self.BibleLoader.getVerse(self._book, self._chapter, i) + "\n"
+            v = self.BibleLoader.parseVerse(self._book, self._chapter, i)
+            t += self.BibleLoader.getVerseTextOnly(self._book, self._chapter, i)
+            text += v
+
+        print(text)
+
+        self._words = [w for (w, s, g) in text]
+        self._strongs = [s for (w, s, g) in text]
+        self._grammars = [g for (w, s, g) in text]
 
         self.plainTextEdit_original.setPlainText(t)
+        self.populateListOriginal()
+        self.populateListTranslation()
+
+    def populateListOriginal(self):
+        self.listWidget_original.clear()
+        for i in self._words:
+            if i not in self._wordsGuessed:
+                self.listWidget_original.addItem(str(i))
+
+    def populateListTranslation(self):
+        self.listWidget_translation.clear()
+        for i in self._strongs:
+            if i not in self._wordsGuessed:
+                self.listWidget_translation.addItem(str(i))
