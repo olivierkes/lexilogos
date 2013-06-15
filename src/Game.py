@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtGui import QWidget
+from PyQt4.QtCore import QTime
 from ui.Game import Ui_Game
 import Game
 
@@ -22,6 +23,7 @@ class Game(QWidget, Ui_Game):
         self._verseFrom = verseFrom
         self._verseTo = verseTo
         self.BibleLoader = parent.BibleLoader
+        self._startTime = QTime.currentTime()
 
         self.loadText()
 
