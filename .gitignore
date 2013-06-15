@@ -33,3 +33,9 @@ nosetests.xml
 .mr.developer.cfg
 .project
 .pydevproject
+
+# KDE directory file
+.directory
+
+# NinjaIDE project file
+*.nja
