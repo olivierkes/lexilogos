@@ -24,7 +24,10 @@ class myHighlighter(QSyntaxHighlighter):
             f.setForeground(QColor(Qt.darkRed))
 
             while pos >= 0:
-                self.setFormat(pos, len(word), f)
+                # We get sure we are not simply highlighting within a word
+                if text[pos - 1: pos] == " " or \
+                   text[pos + len(word):pos + len(word) + 1] == " ":
+                    self.setFormat(pos, len(word), f)
                 pos = text.find(word, pos + 1)
 
 
@@ -55,6 +58,11 @@ class Game(QWidget, Ui_Game):
         self.listWidget_original.itemSelectionChanged.connect(self._highlighter.rehighlight)
         self.plainTextEdit_original.cursorPositionChanged.connect(self.textSelectionChanged)
 
+        # While debugging
+        self.listWidget_original.setSortingEnabled(False)
+        self.listWidget_translation.setSortingEnabled(False)
+
+
         self.loadText()
 
     def textSelectionChanged(self):
@@ -63,7 +71,8 @@ class Game(QWidget, Ui_Game):
             c.movePosition(c.StartOfWord, c.MoveAnchor)
             c.movePosition(c.EndOfWord, c.KeepAnchor)
 
-        r = self.listWidget_original.findItems(c.selectedText(), Qt.MatchExactly)
+        r = self.listWidget_original.findItems(c.selectedText(),
+                                               Qt.MatchExactly)
         if len(r) > 0:
             self.listWidget_original.setCurrentItem(r[0])
 
@@ -75,12 +84,16 @@ class Game(QWidget, Ui_Game):
         t = ""
         for i in range(self._verseFrom, self._verseTo + 1):
             v = self.BibleLoader.parseVerse(self._book, self._chapter, i)
-            t += self.BibleLoader.getVerseTextOnly(self._book, self._chapter, i)
+            t += self.BibleLoader.getVerseTextOnly(self._book, self._chapter,
+                                                   i) + " "
             text += v
 
         print(text)
 
         #TODO: enlever les doublons
+        # but we need to either remove doubles in words list, and then
+        # adapt the strong list, or the opposite. Otherwise, we won't get
+        # the same number of items on each list.
 
         self._words = [w for (w, s, g) in text]
         self._strongs = [s for (w, s, g) in text]
@@ -89,6 +102,9 @@ class Game(QWidget, Ui_Game):
         self.plainTextEdit_original.setPlainText(t)
         self.populateListOriginal()
         self.populateListTranslation()
+
+    def removeDoubles(self, array):
+        return list(set(array))
 
     def populateListOriginal(self):
         self.listWidget_original.clear()
