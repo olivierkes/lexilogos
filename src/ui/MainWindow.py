@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sat Jun 15 11:50:40 2013
+# Created: Sat Jun 15 14:05:00 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -39,8 +39,8 @@ class Ui_MainWindow(object):
         self.statusbar = QtGui.QStatusBar(MainWindow)
         self.statusbar.setObjectName(_fromUtf8("statusbar"))
         MainWindow.setStatusBar(self.statusbar)
-        self.dockWidget = QtGui.QDockWidget(MainWindow)
-        self.dockWidget.setObjectName(_fromUtf8("dockWidget"))
+        self.dockWidget_settings = QtGui.QDockWidget(MainWindow)
+        self.dockWidget_settings.setObjectName(_fromUtf8("dockWidget_settings"))
         self.dockWidgetContents = QtGui.QWidget()
         self.dockWidgetContents.setObjectName(_fromUtf8("dockWidgetContents"))
         self.verticalLayout = QtGui.QVBoxLayout(self.dockWidgetContents)
@@ -185,8 +185,8 @@ class Ui_MainWindow(object):
         self.verticalLayout_5.addWidget(self.label_5)
         self.verticalLayout_7.addWidget(self.groupBox_2)
         self.verticalLayout.addWidget(self.widget)
-        self.dockWidget.setWidget(self.dockWidgetContents)
-        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget)
+        self.dockWidget_settings.setWidget(self.dockWidgetContents)
+        MainWindow.addDockWidget(QtCore.Qt.DockWidgetArea(1), self.dockWidget_settings)
 
         self.retranslateUi(MainWindow)
         QtCore.QObject.connect(self.pushButton_moreOptions, QtCore.SIGNAL(_fromUtf8("toggled(bool)")), self.widget.setVisible)

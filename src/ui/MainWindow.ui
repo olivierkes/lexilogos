@@ -27,7 +27,7 @@
    </property>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QDockWidget" name="dockWidget">
+  <widget class="QDockWidget" name="dockWidget_settings">
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>

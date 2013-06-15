@@ -3,24 +3,32 @@
 import os
 from PyQt4.QtCore import QRegExp
 
+#TODO: traduction
+
 class BibleLoader():
 
-    def __init__(self, bible):
+    def __init__(self, bible, trad=False):
 
         self._bible = bible
         self._books = [0]*27
+        self._trad = trad
         self.loadBible()
 
 
     def loadBible(self):
+        if self._trad:
+            prefix = "../trad/"
+        else:
+            prefix = "../mss/"
+
         try:
-            files = os.listdir("../mss/" + self._bible)
+            files = os.listdir(prefix + self._bible)
         except FileNotFoundError:
             print("Please do not enter an imaginary bible.")
             return
 
         for i in files:
-            f = open("../mss/" + self._bible + "/" + i, 'r')
+            f = open(prefix + self._bible + "/" + i, 'r')
             book = f.read()
             f.close()
 
@@ -54,10 +62,10 @@ class BibleLoader():
             pos = r.indexIn(v)
             chap = int(r.cap(1))
             ver = int(r.cap(2))
-            text = r.cap(3)
+            text = r.cap(3).strip()
             if ver == 1:
                 if len(chapter) > 0: result.append(chapter)
-                chapter = [ver]
+                chapter = [text]
             else:
                 chapter.append(text)
         if len(chapter) > 0: result.append(chapter)
@@ -70,7 +78,7 @@ class BibleLoader():
     def getChapter(self, bookNumber, chapterNumber):
         return self._books[bookNumber][chapterNumber]
 
-    def getverse(self, bookNumber, chapterNumber, verseNumber):
+    def getVerse(self, bookNumber, chapterNumber, verseNumber):
         return self._books[bookNumber][chapterNumber][verseNumber]
 
     def chapterNumber(self, bookNumber):

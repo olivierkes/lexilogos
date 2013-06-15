@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Game.ui'
 #
-# Created: Sat Jun 15 11:33:55 2013
+# Created: Sat Jun 15 14:05:00 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -44,6 +44,7 @@ class Ui_Game(object):
         sizePolicy.setHeightForWidth(self.plainTextEdit_original.sizePolicy().hasHeightForWidth())
         self.plainTextEdit_original.setSizePolicy(sizePolicy)
         self.plainTextEdit_original.setReadOnly(True)
+        self.plainTextEdit_original.setPlainText(_fromUtf8(""))
         self.plainTextEdit_original.setBackgroundVisible(False)
         self.plainTextEdit_original.setCenterOnScroll(False)
         self.plainTextEdit_original.setObjectName(_fromUtf8("plainTextEdit_original"))
@@ -108,7 +109,6 @@ class Ui_Game(object):
 
     def retranslateUi(self, Game):
         Game.setWindowTitle(_translate("Game", "Form", None))
-        self.plainTextEdit_original.setPlainText(_translate("Game", "1   Ἐν  ἀρχῇ  ἦν  ὁ  λόγος,  καὶ  ὁ  λόγος  ἦν  πρὸς  τὸν  θεόν,  καὶ  θεὸς  ἦν  ὁ  λόγος.  2   οὗτος  ἦν  ἐν  ἀρχῇ  πρὸς  τὸν  θεόν.  3   πάντα  δι’  αὐτοῦ  ἐγένετο,  καὶ  χωρὶς  αὐτοῦ  ἐγένετο  οὐδὲ  ἓν  ὃ  γέγονεν  4   ἐν  αὐτῷ  ζωὴ  ἦν,  καὶ  ἡ  ζωὴ  ἦν  τὸ  φῶς  τῶν  ἀνθρώπων·  5   καὶ  τὸ  φῶς  ἐν  τῇ  σκοτίᾳ  φαίνει  καὶ  ἡ  σκοτία  αὐτὸ  οὐ  κατέλαβεν.  ", None))
         self.pushButton_cheatText.setText(_translate("Game", "?", None))
         self.groupBox_5.setTitle(_translate("Game", "Answers", None))
         self.pushButton_4.setText(_translate("Game", "→", None))

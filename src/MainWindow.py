@@ -14,6 +14,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # user interface configuration.
         self.setupUi(self)
 
+
         # Hide some stuff
         self.pushButton_moreOptions.setChecked(False)
 
@@ -24,18 +25,28 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.comboBox_book.currentIndexChanged.connect(self.populatesChapter)
         self.comboBox_chapter.currentIndexChanged.connect(self.populatesVerseFrom)
         self.comboBox_verseFrom.currentIndexChanged.connect(self.populatesVerseTo)
+        self.pushButton_Start.clicked.connect(self.startGame)
 
         # Initalisation
-        self.loadGame()
         self.populatesBook()
 
         # Display
         self.show()
+        self.dockWidget_settings.setMaximumWidth(self.dockWidget_settings.width())
 
-    def loadGame(self):
-        "Creates and sets the central widget"
-        self.game = Game()
+    def startGame(self):
+        #Creates and sets the central widget
+
+        self.game = Game(self.comboBox_book.currentIndex(),
+                         self.comboBox_chapter.currentIndex(),
+                         self.comboBox_verseFrom.currentIndex(),
+                         self.comboBox_verseFrom.currentIndex() +
+                                         self.comboBox_verseTo.currentIndex(),
+                         self)
         self.setCentralWidget(self.game)
+
+
+
 
     def populatesBook(self):
         "Populates the combobox with the NT books names."
