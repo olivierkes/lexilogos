@@ -20,9 +20,6 @@ class myHighlighter(QSyntaxHighlighter):
         "Highlights in the text the word selected in the list."
 
         # Do we have a word selected in the list?
-        # TODO: maybe we should do that only if we are displaying the specifical
-        #       form, and not the lexicon one, because it won't work and it
-        #       helps too much.
         if not self._game._testLexicalForm:
             s = self._game.listWidget_original.selectedItems()
             if len(s) > 0:
@@ -39,6 +36,17 @@ class myHighlighter(QSyntaxHighlighter):
                        pos == 0 or pos + len(word) == len(text):
                         self.setFormat(pos, len(word), f)
                     pos = text.find(word, pos + 1)
+
+        # Marks the words already guessed
+        f = QTextCharFormat()
+        f.setForeground(QColor(Qt.lightGray))
+        for (i, j) in self._game._alreadyGuessed:
+            word = self._game._words[i]
+            pos = text.find(word)
+            while pos >= 0:
+                self.setFormat(pos, len(word), f)
+                pos = text.find(word, pos + 1)
+
 
 
 class Game(QWidget, Ui_Game):
@@ -72,18 +80,24 @@ class Game(QWidget, Ui_Game):
                                 == 1
 
         # Internal lists
-        self._words = []          # Words as in the text
-        self._lexicals = []       # Lexical form of the word
-        self._strongs = []        # Strong number
-        self._definitions = []    # Definition
-        self._grammars = []       # Grammatical informations
-        self._wordsGuessed = []   # Words already guessed
+        self._words = []            # Words as in the text
+        self._lexicals = []         # Lexical form of the word
+        self._strongs = []          # Strong number
+        self._definitions = []      # Definition
+        self._grammars = []         # Grammatical informations
+        self._alreadyGuessed = []   # list of words ID already guessed
 
         # Signal / Slots
         self.listWidget_original.itemSelectionChanged\
                                 .connect(self._highlighter.rehighlight)
+        self.listWidget_original.itemDoubleClicked.connect(self.guessOnList)
+        self.listWidget_translation.itemDoubleClicked.connect(self.guessOnList)
+        self.listWidget_guesses.itemDoubleClicked.connect(self.undoGuess)
+        self.pushButton_guess.clicked.connect(self.testGuess)
+        self.pushButton_undoGuess.clicked.connect(self.undoGuess)
         self.plainTextEdit_original.cursorPositionChanged\
                                    .connect(self.textSelectionChanged)
+        self.pushButton_Validate.clicked.connect(self.validate)
 
         # While debugging
         self.listWidget_original.setSortingEnabled(False)
@@ -91,6 +105,43 @@ class Game(QWidget, Ui_Game):
 
         # Get the party going
         self.loadText()
+
+    def validate(self):
+        "The user is happy with his or her guess and wants the solution."
+        #TODO
+
+    def testGuess(self):
+        "We test if the guess is valid, i.e. if both rows are selected."
+        i = self.listWidget_original.currentRow()
+        j = self.listWidget_translation.currentRow()
+
+        if i != -1 and j != -1:
+            self.guess(i, j)
+
+    def undoGuess(self, item=None):
+        "The user wants to undo a guess."
+        i = self.listWidget_guesses.currentRow()
+        if i != -1:
+            self._alreadyGuessed.pop(i)
+            self.populateLists()
+
+    def guessOnList(self, item):
+        "The user made a guess by double-clicking on a list."
+        self.testGuess()
+
+    def guess(self, i, j):
+        """The user guessed that item number 'i' in the first list is item 'j'
+        in the second one."""
+        itemI = self.listWidget_original.item(i).text()
+        itemJ = self.listWidget_translation.item(j).text()
+
+        IDi = self.toID(itemI)
+        IDj = self.toID(itemJ)
+
+        self._alreadyGuessed.append((IDi, IDj))
+
+        # Makes it visible to the user
+        self.populateLists()
 
     def textSelectionChanged(self):
         """
@@ -136,13 +187,26 @@ class Game(QWidget, Ui_Game):
                 self._strongs.append(s)
                 self._grammars.append(g)
 
+        # Generate _lexicals (lexical forms of words)
         for i in self._strongs:
             u = self.StrongParser.getGreekUnicode(int(i))
             self._lexicals.append(u)
 
+        # Generate _definitions (definitions of words)
+        for i in self._strongs:
+            d = self.StrongParser.getKJVDefinition(int(i))
+            self._definitions.append(d)
+
+        # Makes it all visible to the user
         self.plainTextEdit_original.setPlainText(t)
+        self.populateLists()
+
+    def populateLists(self):
+        "Populates all lists."
         self.populateListOriginal()
         self.populateListTranslation()
+        self.populateListGuesses()
+        self._highlighter.rehighlight()
 
     def populateListOriginal(self):
         """
@@ -152,12 +216,12 @@ class Game(QWidget, Ui_Game):
         self.listWidget_original.clear()
 
         if self._testLexicalForm:
-            theList = self._lexical
+            theList = self._lexicals
         else:
             theList = self._words
 
         for i in theList:
-            if i not in self._wordsGuessed:
+            if not self.alreadyGuessedWord(self.toID(i)):
                 self.listWidget_original.addItem(str(i))
 
     def populateListTranslation(self):
@@ -166,7 +230,46 @@ class Game(QWidget, Ui_Game):
         i.e. self._strongs.
         """
         self.listWidget_translation.clear()
-        for i in self._strongs:
-            if i not in self._wordsGuessed:
-                d = self.StrongParser.getKJVDefinition(int(i))
-                self.listWidget_translation.addItem(d)
+        for i in self._definitions:
+            if not self.alreadyGuessedDefinition(self.toID(i)):
+                self.listWidget_translation.addItem(i)
+
+    def populateListGuesses(self):
+        "Populates the list of guesses already made."
+        self.listWidget_guesses.clear()
+        for (i, j) in self._alreadyGuessed:
+            if self._testLexicalForm:
+                t1 = self._lexicals[i]
+            else:
+                t1 = self._words[i]
+            t2 = self._definitions[j]
+            self.listWidget_guesses.addItem(t1 + " → " + t2)
+
+    def toID(self, text):
+        "Returns the ID (i.e. the position) of the given word."
+        if text in self._words:
+            return self._words.index(text)
+        elif text in self._lexicals:
+            return self._lexicals.index(text)
+        elif text in self._strongs:
+            return self._strongs.index(text)
+        elif text in self._definitions:
+            return self._definitions.index(text)
+        else:
+            return -1
+
+    def alreadyGuessedWord(self, ID):
+        """Returns TRUE if the word whose ID has been given has already been
+        used."""
+        for (i, j) in self._alreadyGuessed:
+            if i == ID:
+                return True
+        return False
+
+    def alreadyGuessedDefinition(self, ID):
+        """Returns TRUE if the definition whose ID has been given has already
+        been used."""
+        for (i, j) in self._alreadyGuessed:
+            if j == ID:
+                return True
+        return False

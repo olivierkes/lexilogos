@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Game.ui'
 #
-# Created: Sat Jun 15 23:36:49 2013
+# Created: Sun Jun 16 17:38:15 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -89,18 +89,18 @@ class Ui_Game(object):
         self.verticalLayout_10.setObjectName(_fromUtf8("verticalLayout_10"))
         spacerItem = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_10.addItem(spacerItem)
-        self.pushButton_4 = QtGui.QPushButton(self.groupBox_5)
-        self.pushButton_4.setObjectName(_fromUtf8("pushButton_4"))
-        self.verticalLayout_10.addWidget(self.pushButton_4)
-        self.pushButton_3 = QtGui.QPushButton(self.groupBox_5)
-        self.pushButton_3.setObjectName(_fromUtf8("pushButton_3"))
-        self.verticalLayout_10.addWidget(self.pushButton_3)
+        self.pushButton_guess = QtGui.QPushButton(self.groupBox_5)
+        self.pushButton_guess.setObjectName(_fromUtf8("pushButton_guess"))
+        self.verticalLayout_10.addWidget(self.pushButton_guess)
+        self.pushButton_undoGuess = QtGui.QPushButton(self.groupBox_5)
+        self.pushButton_undoGuess.setObjectName(_fromUtf8("pushButton_undoGuess"))
+        self.verticalLayout_10.addWidget(self.pushButton_undoGuess)
         spacerItem1 = QtGui.QSpacerItem(20, 40, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_10.addItem(spacerItem1)
         self.horizontalLayout_6.addLayout(self.verticalLayout_10)
-        self.listWidget_results = QtGui.QListWidget(self.groupBox_5)
-        self.listWidget_results.setObjectName(_fromUtf8("listWidget_results"))
-        self.horizontalLayout_6.addWidget(self.listWidget_results)
+        self.listWidget_guesses = QtGui.QListWidget(self.groupBox_5)
+        self.listWidget_guesses.setObjectName(_fromUtf8("listWidget_guesses"))
+        self.horizontalLayout_6.addWidget(self.listWidget_guesses)
         self.verticalLayout_8.addLayout(self.horizontalLayout_6)
         self.horizontalLayout_3 = QtGui.QHBoxLayout()
         self.horizontalLayout_3.setObjectName(_fromUtf8("horizontalLayout_3"))
@@ -122,7 +122,7 @@ class Ui_Game(object):
         self.groupBox_5.setTitle(_translate("Game", "Answers", None))
         self.listWidget_original.setSortingEnabled(True)
         self.listWidget_translation.setSortingEnabled(True)
-        self.pushButton_4.setText(_translate("Game", "→", None))
-        self.pushButton_3.setText(_translate("Game", "←", None))
+        self.pushButton_guess.setText(_translate("Game", "→", None))
+        self.pushButton_undoGuess.setText(_translate("Game", "←", None))
         self.pushButton_Validate.setText(_translate("Game", "Validate", None))
 
