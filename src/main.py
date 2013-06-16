@@ -9,10 +9,10 @@ import sys
 from PyQt4 import QtGui
 
 from MainWindow import MainWindow
-from Game import Game
 
 
 def main():
+    "Loads the app, runs it."
 
     app = QtGui.QApplication(sys.argv)
     app.setOrganizationName("Theologeek")

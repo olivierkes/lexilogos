@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from PyQt4.QtGui import QMainWindow, QPushButton
+from PyQt4.QtGui import QMainWindow
 from ui.MainWindow import Ui_MainWindow
 from Game import Game
 from BibleLoader import BibleLoader
@@ -13,7 +13,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # user interface configuration.
         self.setupUi(self)
-
 
         # Hide some stuff
         self.pushButton_moreOptions.setChecked(False)
@@ -32,9 +31,11 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Display
         self.show()
-        self.dockWidget_settings.setMaximumWidth(self.dockWidget_settings.width())
+        self.dockWidget_settings.setMaximumWidth(
+                                               self.dockWidget_settings.width())
 
     def startGame(self):
+        "Called when the 'Start' button is clicked."
         #Creates and sets the central widget
 
         self.game = Game(self.comboBox_book.currentIndex(),
@@ -44,9 +45,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                          self.comboBox_verseTo.currentIndex(),
                          self)
         self.setCentralWidget(self.game)
-
-
-
 
     def populatesBook(self):
         "Populates the combobox with the NT books names."
@@ -61,18 +59,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.comboBox_book.addItem(i)
 
     def populatesChapter(self, bookNumber):
+        "Loads the proper number of chapters given the book"
         self.comboBox_chapter.clear()
-        for i in range(self.BibleLoader.chapterNumber(bookNumber)):
+        for i in range(self.BibleLoader.numberOfChapter(bookNumber)):
             self.comboBox_chapter.addItem(str(i + 1))
 
     def populatesVerseFrom(self, chapterNumber):
+        "Loads the proper number of verses given the chapter and the book"
         self.comboBox_verseFrom.clear()
-        for i in range(self.BibleLoader.verseNumber(self.comboBox_book.currentIndex(), chapterNumber)):
+        book = self.comboBox_book.currentIndex()
+        for i in range(self.BibleLoader.numberOfVerse(book, chapterNumber)):
             self.comboBox_verseFrom.addItem(str(i + 1))
 
-
     def populatesVerseTo(self, verseNumber):
+        "Loads the proper number of verse starting from the 'verseFrom'"
         self.comboBox_verseTo.clear()
-        for i in range(verseNumber, self.BibleLoader.verseNumber(self.comboBox_book.currentIndex(), self.comboBox_chapter.currentIndex())):
+        bk = self.comboBox_book.currentIndex()
+        ch = self.comboBox_chapter.currentIndex()
+        for i in range(verseNumber, self.BibleLoader.numberOfVerse(bk, ch)):
             self.comboBox_verseTo.addItem(str(i + 1))
 

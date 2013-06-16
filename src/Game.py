@@ -7,38 +7,47 @@ from ui.Game import Ui_Game
 #import Game
 from StrongParser import StrongParser
 
+
 class myHighlighter(QSyntaxHighlighter):
+    "Simple highlighter for the QPlainTextEdit."
 
     def __init__(self, editor, game):
+        "Initialises the highlighter. Needs the 'game' it is used in."
         QSyntaxHighlighter.__init__(self, editor.document())
         self._game = game
 
     def highlightBlock(self, text):
+        "Highlights in the text the word selected in the list."
 
         # Do we have a word selected in the list?
         # TODO: maybe we should do that only if we are displaying the specifical
         #       form, and not the lexicon one, because it won't work and it
         #       helps too much.
-        s = self._game.listWidget_original.selectedItems()
-        if len(s) > 0:
-            word = s[0].text()
-            pos = text.find(word)
-            f = QTextCharFormat()
-            f.setFontWeight(QFont.Bold)
-            f.setForeground(QColor(Qt.darkRed))
+        if not self._game._testLexicalForm:
+            s = self._game.listWidget_original.selectedItems()
+            if len(s) > 0:
+                word = s[0].text()
+                pos = text.find(word)
+                f = QTextCharFormat()
+                f.setFontWeight(QFont.Bold)
+                f.setForeground(QColor(Qt.darkRed))
 
-            while pos >= 0:
-                # We get sure we are not simply highlighting within a word
-                if text[pos - 1: pos] == " " and \
-                   text[pos + len(word):pos + len(word) + 1] == " " or \
-                   pos == 0 or pos + len(word) == len(text):
-                    self.setFormat(pos, len(word), f)
-                pos = text.find(word, pos + 1)
+                while pos >= 0:
+                    # We get sure we are not simply highlighting within a word
+                    if text[pos - 1: pos] == " " and \
+                       text[pos + len(word):pos + len(word) + 1] == " " or \
+                       pos == 0 or pos + len(word) == len(text):
+                        self.setFormat(pos, len(word), f)
+                    pos = text.find(word, pos + 1)
 
 
 class Game(QWidget, Ui_Game):
-
+    """
+    Contains everything concerning the game, i.e. gessing the definition of a
+    word while reading the context in which it occurs.
+    """
     def __init__(self, book=10, chapter=1, verseFrom=6, verseTo=6, parent=None):
+        "Initialises a Game given a book, a chapter, and the verses."
         QWidget.__init__(self)
         Ui_Game.__init__(self)
 
@@ -63,8 +72,8 @@ class Game(QWidget, Ui_Game):
         self._words = []
         self._strongs = []
         self._grammars = []
-        self._testLexicalForm = parent.comboBox_testLexicalForm.currentIndex() == 1
-        print(self._testLexicalForm)
+        self._testLexicalForm = parent.comboBox_testLexicalForm.currentIndex()\
+                                == 1
 
         self._highlighter = myHighlighter(self.plainTextEdit_original, self)
 
@@ -79,11 +88,15 @@ class Game(QWidget, Ui_Game):
         self.loadText()
 
     def textSelectionChanged(self):
+        """
+        This to do when the user clicks on the text.
+        """
+        # Finds the selected text
         c = self.plainTextEdit_original.textCursor()
         if len(c.selectedText()) == 0:
             c.movePosition(c.StartOfWord, c.MoveAnchor)
             c.movePosition(c.EndOfWord, c.KeepAnchor)
-
+        # If it is a word in the list, selects it
         r = self.listWidget_original.findItems(c.selectedText(),
                                                Qt.MatchExactly)
         if len(r) > 0:
@@ -92,10 +105,16 @@ class Game(QWidget, Ui_Game):
         #self.plainTextEdit_original.setTextCursor(c)
 
     def loadText(self):
+        """
+        Loads the biblical verses on the basis of self settings (_verseFrom and
+        _verseTo). Displays the text, populates the lists.
+        """
+
+        # Gets the biblical text in 'text'
         text = []
         t = ""
         for i in range(self._verseFrom, self._verseTo + 1):
-            v = self.BibleLoader.parseVerse(self._book, self._chapter, i)
+            v = self.BibleLoader.getParsedVerse(self._book, self._chapter, i)
             t += self.BibleLoader.getVerseTextOnly(self._book, self._chapter,
                                                    i) + " "
             text += v
@@ -117,6 +136,10 @@ class Game(QWidget, Ui_Game):
         self.populateListTranslation()
 
     def populateListOriginal(self):
+        """
+        Populates the list of words to be translated, on the basis of internal
+        informations, i.e. self._words.
+        """
         self.listWidget_original.clear()
         for i in self._words:
             if i not in self._wordsGuessed:
@@ -128,8 +151,12 @@ class Game(QWidget, Ui_Game):
                     self.listWidget_original.addItem(str(i))
 
     def populateListTranslation(self):
+        """
+        Populates the definitions, on the basis of internal informations,
+        i.e. self._strongs.
+        """
         self.listWidget_translation.clear()
         for i in self._strongs:
             if i not in self._wordsGuessed:
-                d = str(i) + " " + self._strongParser.getKJVDefinition(int(i))
+                d = self._strongParser.getKJVDefinition(int(i))
                 self.listWidget_translation.addItem(d)
