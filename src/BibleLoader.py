@@ -53,7 +53,7 @@ class BibleLoader():
                 if v: verse.append(v)
                 v = l[5:]
             else:
-                v += l
+                v += " " + l
         if v: verse.append(v)
 
         r = QRegExp(r'(\d+):(\d+)\s*(.*)')
