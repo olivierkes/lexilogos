@@ -4,7 +4,8 @@ from PyQt4.QtGui import QWidget, QSyntaxHighlighter, QTextCharFormat, QFont, \
                         QColor
 from PyQt4.QtCore import QTime, Qt
 from ui.Game import Ui_Game
-import Game
+#import Game
+from StrongParser import StrongParser
 
 class myHighlighter(QSyntaxHighlighter):
 
@@ -47,6 +48,9 @@ class Game(QWidget, Ui_Game):
         #Hide some stuff
         self.pushButton_cheatText.setChecked(False)
 
+        # Strong Parser
+        self._strongParser = StrongParser()
+
         # Initialise var
         self._book = book
         self._chapter = chapter
@@ -55,10 +59,12 @@ class Game(QWidget, Ui_Game):
         self.BibleLoader = parent.BibleLoader
         self._startTime = QTime.currentTime()
         self._wordsGuessed = []
-        self._parent = parent
+        #self._parent = parent
         self._words = []
         self._strongs = []
         self._grammars = []
+        self._testLexicalForm = parent.comboBox_testLexicalForm.currentIndex() == 1
+        print(self._testLexicalForm)
 
         self._highlighter = myHighlighter(self.plainTextEdit_original, self)
 
@@ -97,13 +103,11 @@ class Game(QWidget, Ui_Game):
         # Removes doubles. Either in one list or the other, according to
         # the setting (displaying the specifical form, or the lexicon form)
         for (w, s, g) in text:
-            if self._parent.comboBox_testLexicalForm.currentIndex() == 0 \
-               and not w in self._words:
+            if not self._testLexicalForm and not w in self._words:
                 self._words.append(w)
                 self._strongs.append(s)
                 self._grammars.append(g)
-            elif self._parent.comboBox_testLexicalForm.currentIndex() == 1 \
-                 and not s in self._strongs:
+            elif self._testLexicalForm and not s in self._strongs:
                 self._words.append(w)
                 self._strongs.append(s)
                 self._grammars.append(g)
@@ -116,10 +120,16 @@ class Game(QWidget, Ui_Game):
         self.listWidget_original.clear()
         for i in self._words:
             if i not in self._wordsGuessed:
-                self.listWidget_original.addItem(str(i))
+                if self._testLexicalForm:
+                    s = self._strongs[self._words.index(i)]
+                    u = self._strongParser.getGreekUnicode(int(s))
+                    self.listWidget_original.addItem(u)
+                else:
+                    self.listWidget_original.addItem(str(i))
 
     def populateListTranslation(self):
         self.listWidget_translation.clear()
         for i in self._strongs:
             if i not in self._wordsGuessed:
-                self.listWidget_translation.addItem(str(i))
+                d = str(i) + " " + self._strongParser.getKJVDefinition(int(i))
+                self.listWidget_translation.addItem(d)
