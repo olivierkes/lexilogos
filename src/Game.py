@@ -51,40 +51,45 @@ class Game(QWidget, Ui_Game):
         QWidget.__init__(self)
         Ui_Game.__init__(self)
 
-        # user interface configuration.
+        # User interface configuration.
         self.setupUi(self)
 
-        #Hide some stuff
+        # Hide some stuff
         self.pushButton_cheatText.setChecked(False)
 
         # Strong Parser
-        self._strongParser = StrongParser()
+        self.StrongParser = StrongParser()
+        self._highlighter = myHighlighter(self.plainTextEdit_original, self)
 
-        # Initialise var
+        # Settings
         self._book = book
         self._chapter = chapter
         self._verseFrom = verseFrom
         self._verseTo = verseTo
         self.BibleLoader = parent.BibleLoader
         self._startTime = QTime.currentTime()
-        self._wordsGuessed = []
-        #self._parent = parent
-        self._words = []
-        self._strongs = []
-        self._grammars = []
         self._testLexicalForm = parent.comboBox_testLexicalForm.currentIndex()\
                                 == 1
 
-        self._highlighter = myHighlighter(self.plainTextEdit_original, self)
+        # Internal lists
+        self._words = []          # Words as in the text
+        self._lexicals = []       # Lexical form of the word
+        self._strongs = []        # Strong number
+        self._definitions = []    # Definition
+        self._grammars = []       # Grammatical informations
+        self._wordsGuessed = []   # Words already guessed
 
         # Signal / Slots
-        self.listWidget_original.itemSelectionChanged.connect(self._highlighter.rehighlight)
-        self.plainTextEdit_original.cursorPositionChanged.connect(self.textSelectionChanged)
+        self.listWidget_original.itemSelectionChanged\
+                                .connect(self._highlighter.rehighlight)
+        self.plainTextEdit_original.cursorPositionChanged\
+                                   .connect(self.textSelectionChanged)
 
         # While debugging
         self.listWidget_original.setSortingEnabled(False)
         self.listWidget_translation.setSortingEnabled(False)
 
+        # Get the party going
         self.loadText()
 
     def textSelectionChanged(self):
@@ -131,6 +136,10 @@ class Game(QWidget, Ui_Game):
                 self._strongs.append(s)
                 self._grammars.append(g)
 
+        for i in self._strongs:
+            u = self.StrongParser.getGreekUnicode(int(i))
+            self._lexicals.append(u)
+
         self.plainTextEdit_original.setPlainText(t)
         self.populateListOriginal()
         self.populateListTranslation()
@@ -141,14 +150,15 @@ class Game(QWidget, Ui_Game):
         informations, i.e. self._words.
         """
         self.listWidget_original.clear()
-        for i in self._words:
+
+        if self._testLexicalForm:
+            theList = self._lexical
+        else:
+            theList = self._words
+
+        for i in theList:
             if i not in self._wordsGuessed:
-                if self._testLexicalForm:
-                    s = self._strongs[self._words.index(i)]
-                    u = self._strongParser.getGreekUnicode(int(s))
-                    self.listWidget_original.addItem(u)
-                else:
-                    self.listWidget_original.addItem(str(i))
+                self.listWidget_original.addItem(str(i))
 
     def populateListTranslation(self):
         """
@@ -158,5 +168,5 @@ class Game(QWidget, Ui_Game):
         self.listWidget_translation.clear()
         for i in self._strongs:
             if i not in self._wordsGuessed:
-                d = self._strongParser.getKJVDefinition(int(i))
+                d = self.StrongParser.getKJVDefinition(int(i))
                 self.listWidget_translation.addItem(d)
