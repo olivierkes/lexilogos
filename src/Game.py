@@ -100,8 +100,8 @@ class Game(QWidget, Ui_Game):
         self.pushButton_Validate.clicked.connect(self.validate)
 
         # While debugging
-        self.listWidget_original.setSortingEnabled(False)
-        self.listWidget_translation.setSortingEnabled(False)
+        #self.listWidget_original.setSortingEnabled(False)
+        #self.listWidget_translation.setSortingEnabled(False)
 
         # Get the party going
         self.loadText()
@@ -137,6 +137,11 @@ class Game(QWidget, Ui_Game):
 
         IDi = self.toID(itemI)
         IDj = self.toID(itemJ)
+
+        # It's possible that the same definition appears more than once.
+        # If that's the case, we apply the correct one.
+        if self._definitions[IDi] == self._definitions[IDj]:
+            IDj = IDi
 
         self._alreadyGuessed.append((IDi, IDj))
 
@@ -230,9 +235,9 @@ class Game(QWidget, Ui_Game):
         i.e. self._strongs.
         """
         self.listWidget_translation.clear()
-        for i in self._definitions:
-            if not self.alreadyGuessedDefinition(self.toID(i)):
-                self.listWidget_translation.addItem(i)
+        for i in range(len(self._definitions)):
+            if not self.alreadyGuessedDefinition(i):
+                self.listWidget_translation.addItem(self._definitions[i])
 
     def populateListGuesses(self):
         "Populates the list of guesses already made."
