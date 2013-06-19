@@ -183,7 +183,17 @@ class Game(QWidget, Ui_Game):
         itemJ = self.listWidget_translation.item(j).text()
 
         IDi = self.toID(itemI)
-        IDj = self.toID(itemJ)
+
+        start = 0
+        while start >= 0:
+            IDj = self.toID(itemJ, start)
+            if IDj in [j for (i, j) in self._alreadyGuessed]:
+                start = IDj + 1
+            else:
+                start = -1
+
+        #FIXME: we have a problem here in some cases
+        # Example: Mt 7, 1-2, depending on the order you chose solutions...
 
         # It's possible that the same definition appears more than once.
         # If that's the case, we apply the correct one.
@@ -340,16 +350,16 @@ class Game(QWidget, Ui_Game):
             t2 = self._definitions[j]
             self.listWidget_guesses.addItem(t1 + " → " + t2)
 
-    def toID(self, text):
+    def toID(self, text, start=0):
         "Returns the ID (i.e. the position) of the given word."
         if text in self._words:
-            return self._words.index(text)
+            return self._words.index(text, start)
         elif text in self._lexicals:
-            return self._lexicals.index(text)
+            return self._lexicals.index(text, start)
         elif text in self._strongs:
-            return self._strongs.index(text)
+            return self._strongs.index(text, start)
         elif text in self._definitions:
-            return self._definitions.index(text)
+            return self._definitions.index(text, start)
         else:
             return -1
 
