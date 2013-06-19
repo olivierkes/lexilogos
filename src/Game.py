@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtGui import QWidget, QSyntaxHighlighter, QTextCharFormat, QFont, \
-                        QColor
+                        QColor, QMessageBox, QListWidgetItem
 from PyQt4.QtCore import QTime, Qt
 from ui.Game import Ui_Game
 #import Game
@@ -98,9 +98,10 @@ class Game(QWidget, Ui_Game):
         self.plainTextEdit_original.cursorPositionChanged\
                                    .connect(self.textSelectionChanged)
         self.pushButton_Validate.clicked.connect(self.validate)
+        self.pushButton_Validate.setEnabled(False)
 
         # While debugging
-        #self.listWidget_original.setSortingEnabled(False)
+        self.listWidget_original.setSortingEnabled(False)
         #self.listWidget_translation.setSortingEnabled(False)
 
         # Get the party going
@@ -108,7 +109,30 @@ class Game(QWidget, Ui_Game):
 
     def validate(self):
         "The user is happy with his or her guess and wants the solution."
-        #TODO
+        p = 0
+        self.listWidget_translation.setSortingEnabled(False)
+
+        if self._testLexicalForm:
+            theList = self._lexicals
+        else:
+            theList = self._words
+
+        for (i, j) in self._alreadyGuessed:
+            if i == j:
+                p += 1
+                color = "green"
+            else:
+                color = "red"
+            w = QListWidgetItem(theList[i])
+            w.setForeground(QColor(color))
+            d = QListWidgetItem(self._definitions[i])
+            d.setForeground(QColor(color))
+            self.listWidget_original.addItem(w)
+            self.listWidget_translation.addItem(d)
+
+        #msgBox = QMessageBox()
+        #msgBox.setText("Score: " + str(p) + " / " + str(len(self._words)) + ".")
+        #msgBox.exec()
 
     def testGuess(self):
         "We test if the guess is valid, i.e. if both rows are selected."
@@ -212,6 +236,10 @@ class Game(QWidget, Ui_Game):
         self.populateListTranslation()
         self.populateListGuesses()
         self._highlighter.rehighlight()
+        if len(self._alreadyGuessed) == len(self._words):
+            self.pushButton_Validate.setEnabled(True)
+        else:
+            self.pushButton_Validate.setEnabled(False)
 
     def populateListOriginal(self):
         """
