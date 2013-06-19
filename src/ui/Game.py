@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'Game.ui'
 #
-# Created: Wed Jun 19 17:28:34 2013
+# Created: Wed Jun 19 19:10:02 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -124,5 +124,5 @@ class Ui_Game(object):
         self.listWidget_translation.setSortingEnabled(True)
         self.pushButton_guess.setText(_translate("Game", "→", None))
         self.pushButton_undoGuess.setText(_translate("Game", "←", None))
-        self.pushButton_Validate.setText(_translate("Game", "Validate", None))
+        self.pushButton_Validate.setText(_translate("Game", "Solution", None))
 

@@ -78,6 +78,8 @@ class Game(QWidget, Ui_Game):
 
         # Hide some stuff
         self.pushButton_cheatText.setChecked(False)
+        self.pushButton_cheatText.setVisible(False)
+
 
         # Strong Parser
         self.StrongParser = StrongParser()
@@ -117,7 +119,7 @@ class Game(QWidget, Ui_Game):
         self.plainTextEdit_original.cursorPositionChanged\
                                    .connect(self.textSelectionChanged)
         self.pushButton_Validate.clicked.connect(self.validate)
-        self.pushButton_Validate.setEnabled(False)
+        #self.pushButton_Validate.setEnabled(False)
 
         self.listWidget_original.setSortingEnabled(False)
         if self._listDefRandom:
@@ -130,24 +132,48 @@ class Game(QWidget, Ui_Game):
         "The user is happy with his or her guess and wants the solution."
         p = 0
         self.listWidget_translation.setSortingEnabled(False)
+        self.listWidget_original.clear()
+        self.listWidget_translation.clear()
 
         if self._testLexicalForm:
             theList = self._lexicals
         else:
             theList = self._words
 
-        for (i, j) in self._alreadyGuessed:
-            if i == j:
-                p += 1
-                color = "green"
+        for k in range(len(theList)):
+            if k in [i for (i, j) in self._alreadyGuessed]:
+                (i, j) = [(i, j) for (i, j) in self._alreadyGuessed if i == k][0]
+                if i == j:
+                    p += 1
+                    color = "green"
+                else:
+                    color = "red"
+                w = QListWidgetItem(theList[i])
+                w.setForeground(QColor(color))
+                d = QListWidgetItem(self._definitions[i])
+                d.setForeground(QColor(color))
+                self.listWidget_original.addItem(w)
+                self.listWidget_translation.addItem(d)
+            elif k in [j for (i, j) in self._alreadyGuessed]:
+                (i, j) = [(i, j) for (i, j) in self._alreadyGuessed if j == k][0]
+                if i == j:
+                    p += 1
+                    color = "green"
+                else:
+                    color = "red"
+                w = QListWidgetItem(theList[j])
+                w.setForeground(QColor(color))
+                d = QListWidgetItem(self._definitions[j])
+                d.setForeground(QColor(color))
+                self.listWidget_original.addItem(w)
+                self.listWidget_translation.addItem(d)
             else:
-                color = "red"
-            w = QListWidgetItem(theList[i])
-            w.setForeground(QColor(color))
-            d = QListWidgetItem(self._definitions[i])
-            d.setForeground(QColor(color))
-            self.listWidget_original.addItem(w)
-            self.listWidget_translation.addItem(d)
+                w = QListWidgetItem(theList[k])
+                w.setForeground(QColor("blue"))
+                d = QListWidgetItem(self._definitions[k])
+                d.setForeground(QColor("blue"))
+                self.listWidget_original.addItem(w)
+                self.listWidget_translation.addItem(d)
 
         self.setListMaximumWidth(self.listWidget_original)
         self.setListMaximumWidth(self.listWidget_translation)
@@ -304,11 +330,6 @@ class Game(QWidget, Ui_Game):
         self.populateListTranslation()
         self.populateListGuesses()
         self._highlighter.rehighlight()
-        if len(self._alreadyGuessed) + len(self._tooEasy) + len(self._tooHard)\
-           == len(self._words):
-            self.pushButton_Validate.setEnabled(True)
-        else:
-            self.pushButton_Validate.setEnabled(False)
 
     def populateListOriginal(self):
         """

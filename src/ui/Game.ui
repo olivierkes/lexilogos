@@ -178,7 +178,7 @@
         <item>
          <widget class="QPushButton" name="pushButton_Validate">
           <property name="text">
-           <string>Validate</string>
+           <string>Solution</string>
           </property>
          </widget>
         </item>
