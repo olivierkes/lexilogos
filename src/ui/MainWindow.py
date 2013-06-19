@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Wed Jun 19 13:40:56 2013
+# Created: Wed Jun 19 17:28:34 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -141,20 +141,19 @@ class Ui_MainWindow(object):
         self.comboBox_testLexicalForm.setObjectName(_fromUtf8("comboBox_testLexicalForm"))
         self.comboBox_testLexicalForm.addItem(_fromUtf8(""))
         self.comboBox_testLexicalForm.addItem(_fromUtf8(""))
-        self.comboBox_testLexicalForm.addItem(_fromUtf8(""))
         self.formLayout_2.setWidget(3, QtGui.QFormLayout.FieldRole, self.comboBox_testLexicalForm)
         self.label_8 = QtGui.QLabel(self.groupBox_4)
         self.label_8.setObjectName(_fromUtf8("label_8"))
         self.formLayout_2.setWidget(0, QtGui.QFormLayout.LabelRole, self.label_8)
-        self.comboBox_textLanguage = QtGui.QComboBox(self.groupBox_4)
-        self.comboBox_textLanguage.setObjectName(_fromUtf8("comboBox_textLanguage"))
-        self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.comboBox_textLanguage)
+        self.comboBox_mss = QtGui.QComboBox(self.groupBox_4)
+        self.comboBox_mss.setObjectName(_fromUtf8("comboBox_mss"))
+        self.formLayout_2.setWidget(0, QtGui.QFormLayout.FieldRole, self.comboBox_mss)
         self.label_9 = QtGui.QLabel(self.groupBox_4)
         self.label_9.setObjectName(_fromUtf8("label_9"))
         self.formLayout_2.setWidget(1, QtGui.QFormLayout.LabelRole, self.label_9)
-        self.comboBox_lexiconVersion = QtGui.QComboBox(self.groupBox_4)
-        self.comboBox_lexiconVersion.setObjectName(_fromUtf8("comboBox_lexiconVersion"))
-        self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.comboBox_lexiconVersion)
+        self.comboBox_lexicon = QtGui.QComboBox(self.groupBox_4)
+        self.comboBox_lexicon.setObjectName(_fromUtf8("comboBox_lexicon"))
+        self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.comboBox_lexicon)
         self.verticalLayout_7.addWidget(self.groupBox_4)
         self.groupBox_2 = QtGui.QGroupBox(self.widget)
         self.groupBox_2.setFlat(False)
@@ -215,11 +214,10 @@ class Ui_MainWindow(object):
         self.label_6.setText(_translate("MainWindow", "Sort words", None))
         self.comboBox_sort.setItemText(0, _translate("MainWindow", "Randomely", None))
         self.comboBox_sort.setItemText(1, _translate("MainWindow", "Alphabetically", None))
-        self.label_7.setText(_translate("MainWindow", "Test", None))
+        self.label_7.setText(_translate("MainWindow", "Display", None))
         self.comboBox_testLexicalForm.setItemText(0, _translate("MainWindow", "Textual form", None))
         self.comboBox_testLexicalForm.setItemText(1, _translate("MainWindow", "Lexical form", None))
-        self.comboBox_testLexicalForm.setItemText(2, _translate("MainWindow", "Both", None))
-        self.label_8.setText(_translate("MainWindow", "Text", None))
+        self.label_8.setText(_translate("MainWindow", "Manuscript", None))
         self.label_9.setText(_translate("MainWindow", "Lexicon", None))
         self.groupBox_2.setTitle(_translate("MainWindow", "Only words with:", None))
         self.checkBox_moreThanOccurences.setText(_translate("MainWindow", "more than", None))

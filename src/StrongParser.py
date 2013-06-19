@@ -10,7 +10,7 @@ class StrongParser():
     infos.
     """
 
-    def __init__(self, lexicon="../lexicons/strongsgreek.xml"):
+    def __init__(self, lexicon="../lexicons/Strongs_EN/strongsgreek.xml"):
         "Takes the path to the lexicon as argument, or uses the default one."
         self._doc = QDomDocument()
         if not self._doc.setContent(QFile(lexicon)):

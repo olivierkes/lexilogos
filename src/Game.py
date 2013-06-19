@@ -6,7 +6,7 @@ from PyQt4.QtCore import QTime, Qt
 from ui.Game import Ui_Game
 #import Game
 from StrongParser import StrongParser
-
+from random import shuffle
 
 class myHighlighter(QSyntaxHighlighter):
     "Simple highlighter for the QPlainTextEdit."
@@ -29,26 +29,26 @@ class myHighlighter(QSyntaxHighlighter):
                 f.setForeground(QColor(Qt.darkRed))
                 self.highlightWord(text, word, f)
 
-        # Marks the words already guessed
-        f = QTextCharFormat()
-        f.setForeground(QColor(Qt.lightGray))
-        for (i, j) in self._game._alreadyGuessed:
-            word = self._game._words[i]
-            self.highlightWord(text, word, f)
+            # Marks the words already guessed
+            f = QTextCharFormat()
+            f.setForeground(QColor(Qt.darkGray))
+            for (i, j) in self._game._alreadyGuessed:
+                word = self._game._words[i]
+                self.highlightWord(text, word, f)
 
-        # Marks the words to hard
-        f = QTextCharFormat()
-        f.setForeground(QColor("blue"))
-        for i in self._game._tooHard:
-            word = self._game._words[i]
-            self.highlightWord(text, word, f)
+            # Marks the words to hard
+            f = QTextCharFormat()
+            f.setForeground(QColor("blue"))
+            for i in self._game._tooHard:
+                word = self._game._words[i]
+                self.highlightWord(text, word, f)
 
-        # Marks the words to easy
-        f = QTextCharFormat()
-        f.setForeground(QColor(Qt.lightGray))
-        for i in self._game._tooEasy:
-            word = self._game._words[i]
-            self.highlightWord(text, word, f)
+            # Marks the words to easy
+            f = QTextCharFormat()
+            f.setForeground(QColor(Qt.lightGray))
+            for i in self._game._tooEasy:
+                word = self._game._words[i]
+                self.highlightWord(text, word, f)
 
     def highlightWord(self, text, word, f):
         "Highligt all occurences of 'word' in 'text' with the format 'f'."
@@ -96,6 +96,7 @@ class Game(QWidget, Ui_Game):
                          int(parent.comboBox_lessThanOccurences.currentText())
         self._moreThan = parent.checkBox_moreThanOccurences.isChecked() * \
                          int(parent.comboBox_moreThanOccurences.currentText())
+        self._listDefRandom = parent.comboBox_sort.currentIndex() == 0
 
         # Internal lists
         self._words = []            # Words as in the text
@@ -118,9 +119,9 @@ class Game(QWidget, Ui_Game):
         self.pushButton_Validate.clicked.connect(self.validate)
         self.pushButton_Validate.setEnabled(False)
 
-        # While debugging
         self.listWidget_original.setSortingEnabled(False)
-        #self.listWidget_translation.setSortingEnabled(False)
+        if self._listDefRandom:
+            self.listWidget_translation.setSortingEnabled(False)
 
         # Get the party going
         self.loadText()
@@ -265,12 +266,12 @@ class Game(QWidget, Ui_Game):
                 self._strongs.append(s)
                 self._grammars.append(g)
 
+        # Things for words comming to often or not enough
         self._tooHard = []
         self._tooEasy = []
         if self._lessThan or self._moreThan:
             for i in range(len(self._strongs)):
                 n = self.BibleLoader.numberOfOccurence(self._strongs[i])
-                #print(self._words[i], n)
                 if self._lessThan and n > self._lessThan:
                     # The word is too easy (appears many time)
                     self._tooEasy.append(i)
@@ -287,6 +288,11 @@ class Game(QWidget, Ui_Game):
         for i in self._strongs:
             d = self.StrongParser.getKJVDefinition(int(i))
             self._definitions.append(d)
+
+        # Generate definition order:
+        self._defOrder = list(range(len(self._definitions)))
+        if self._listDefRandom:
+            shuffle(self._defOrder)
 
         # Makes it all visible to the user
         self.plainTextEdit_original.setPlainText(t)
@@ -339,7 +345,7 @@ class Game(QWidget, Ui_Game):
         i.e. self._strongs.
         """
         self.listWidget_translation.clear()
-        for i in range(len(self._definitions)):
+        for i in self._defOrder:
             if not self.alreadyGuessedDefinition(i) and not i in self._tooHard \
                and not i in self._tooEasy:
                 self.listWidget_translation.addItem(self._definitions[i])

@@ -4,6 +4,7 @@ from PyQt4.QtGui import QMainWindow
 from ui.MainWindow import Ui_MainWindow
 from Game import Game
 from BibleLoader import BibleLoader
+import os
 
 class MainWindow(QMainWindow, Ui_MainWindow):
 
@@ -28,6 +29,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Initalisation
         self.populatesBook()
+        self.populatesVersion()
+        self.setWindowTitle("Lexilogos")
 
         # Display
         self.show()
@@ -45,6 +48,22 @@ class MainWindow(QMainWindow, Ui_MainWindow):
                                          self.comboBox_verseTo.currentIndex(),
                          self)
         self.setCentralWidget(self.game)
+
+    def populatesVersion(self):
+        try:
+            files = os.listdir("../mss")
+        except FileNotFoundError:
+            print("Error reading mss dir.")
+            return
+        for i in files:
+            self.comboBox_mss.addItem(i)
+        try:
+            files = os.listdir("../lexicons")
+        except FileNotFoundError:
+            print("Error reading lexicons.")
+            return
+        for i in files:
+            self.comboBox_lexicon.addItem(i)
 
     def populatesBook(self):
         "Populates the combobox with the NT books names."

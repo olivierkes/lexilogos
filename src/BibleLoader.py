@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import os
+import os, re
 from PyQt4.QtCore import QRegExp
 
 #TODO: traduction
@@ -74,6 +74,8 @@ class BibleLoader():
             chap = int(r.cap(1))
             ver = int(r.cap(2))
             text = r.cap(3).strip()
+            # Variantes textuelles
+            text = re.sub(r'\|( .* )\|( .* )\|', r'\1', text)
             if ver == 1:
                 if len(chapter) > 0: result.append(chapter)
                 chapter = [text]
@@ -115,20 +117,24 @@ class BibleLoader():
         Exemple: "MT" or "MT.BP5" returns 0 (first book of the NT)
         """
         bookorder = ["MT", "MR", "LU", "JOH", "AC", "RO", "1CO", "2CO", "GA",
-                     "EPH", "COL", "PHP", "1TH", "2TH", "1TI", "2TI", "TIT",
+                     "EPH", "PHP", "COL", "1TH", "2TH", "1TI", "2TI", "TIT",
                      "PHM", "HEB", "JAS", "1PE", "2PE", "1JO", "2JO", "3JO",
                      "JUDE", "RE"]
 
         for i in bookorder:
             if i in bookcode:
+                print(i, bookcode)
                 return bookorder.index(i)
 
         print("ERROR: the bookcode is invalid.")
 
     def setBible(self, bible):
         "Change the Bible. Not sure it works just like that."
-        self._bible = bible
-        self.loadBible()
+        self.__init__(bible)
+
+    def setTraductin(self, trad):
+        "Change the Bible for a traduction. Not sure it works just like that."
+        self.__init__(trad, True)
 
 ###############################################################################
 # Query Functions
