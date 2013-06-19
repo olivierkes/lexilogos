@@ -22,6 +22,13 @@ In order to run Lexilogos, you will need:
 * Qt
 * PyQt bindings
 
+### Download
+
+Either:
+* clone git repository,
+* download [last version](https://github.com/olivierkes/lexilogos/archive/master.zip) (unstable),
+* or [download v0.1](https://github.com/olivierkes/lexilogos/archive/v0.1.zip) (stable).
+
 ### Run
 
 Download the source, move to the `src` folder and run `python main.py`. Or from the root folder, run `lexilogos.sh`.
