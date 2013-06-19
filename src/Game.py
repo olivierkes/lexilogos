@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from PyQt4.QtGui import QWidget, QSyntaxHighlighter, QTextCharFormat, QFont, \
-                        QColor, QMessageBox, QListWidgetItem
+                        QColor, QMessageBox, QListWidgetItem, QFontMetrics
 from PyQt4.QtCore import QTime, Qt
 from ui.Game import Ui_Game
 #import Game
@@ -130,6 +130,9 @@ class Game(QWidget, Ui_Game):
             self.listWidget_original.addItem(w)
             self.listWidget_translation.addItem(d)
 
+        self.setListMaximumWidth(self.listWidget_original)
+        self.setListMaximumWidth(self.listWidget_translation)
+
         #msgBox = QMessageBox()
         #msgBox.setText("Score: " + str(p) + " / " + str(len(self._words)) + ".")
         #msgBox.exec()
@@ -257,6 +260,18 @@ class Game(QWidget, Ui_Game):
             if not self.alreadyGuessedWord(self.toID(i)):
                 self.listWidget_original.addItem(str(i))
 
+        self.setListMaximumWidth(self.listWidget_original)
+
+    def setListMaximumWidth(self, theList):
+        "Sets the MaximumWidth of the given list according to its items."
+        maxW = 0
+        for i in range(theList.count()):
+            it = theList.item(i)
+            fm = QFontMetrics(it.font())
+            w = fm.width(it.text())
+            maxW = max(w, maxW)
+        theList.setMaximumWidth(maxW + 20)
+
     def populateListTranslation(self):
         """
         Populates the definitions, on the basis of internal informations,
@@ -266,6 +281,7 @@ class Game(QWidget, Ui_Game):
         for i in range(len(self._definitions)):
             if not self.alreadyGuessedDefinition(i):
                 self.listWidget_translation.addItem(self._definitions[i])
+        self.setListMaximumWidth(self.listWidget_translation)
 
     def populateListGuesses(self):
         "Populates the list of guesses already made."
