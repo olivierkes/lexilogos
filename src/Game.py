@@ -44,9 +44,12 @@ class myHighlighter(QSyntaxHighlighter):
             word = self._game._words[i]
             pos = text.find(word)
             while pos >= 0:
-                self.setFormat(pos, len(word), f)
+                # We get sure we are not simply highlighting within a word
+                if text[pos - 1: pos] == " " and \
+                   text[pos + len(word):pos + len(word) + 1] == " " or \
+                   pos == 0 or pos + len(word) == len(text):
+                    self.setFormat(pos, len(word), f)
                 pos = text.find(word, pos + 1)
-
 
 
 class Game(QWidget, Ui_Game):
