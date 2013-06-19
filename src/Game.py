@@ -24,32 +24,44 @@ class myHighlighter(QSyntaxHighlighter):
             s = self._game.listWidget_original.selectedItems()
             if len(s) > 0:
                 word = s[0].text()
-                pos = text.find(word)
                 f = QTextCharFormat()
                 f.setFontWeight(QFont.Bold)
                 f.setForeground(QColor(Qt.darkRed))
-
-                while pos >= 0:
-                    # We get sure we are not simply highlighting within a word
-                    if text[pos - 1: pos] == " " and \
-                       text[pos + len(word):pos + len(word) + 1] == " " or \
-                       pos == 0 or pos + len(word) == len(text):
-                        self.setFormat(pos, len(word), f)
-                    pos = text.find(word, pos + 1)
+                self.highlightWord(text, word, f)
 
         # Marks the words already guessed
         f = QTextCharFormat()
         f.setForeground(QColor(Qt.lightGray))
         for (i, j) in self._game._alreadyGuessed:
             word = self._game._words[i]
-            pos = text.find(word)
-            while pos >= 0:
-                # We get sure we are not simply highlighting within a word
-                if text[pos - 1: pos] == " " and \
-                   text[pos + len(word):pos + len(word) + 1] == " " or \
-                   pos == 0 or pos + len(word) == len(text):
-                    self.setFormat(pos, len(word), f)
-                pos = text.find(word, pos + 1)
+            self.highlightWord(text, word, f)
+
+        # Marks the words to hard
+        f = QTextCharFormat()
+        f.setForeground(QColor("blue"))
+        for i in self._game._tooHard:
+            word = self._game._words[i]
+            self.highlightWord(text, word, f)
+
+        # Marks the words to easy
+        f = QTextCharFormat()
+        f.setForeground(QColor(Qt.lightGray))
+        for i in self._game._tooEasy:
+            word = self._game._words[i]
+            self.highlightWord(text, word, f)
+
+
+    def highlightWord(self, text, word, f):
+        pos = text.find(word)
+        while pos >= 0:
+            # We get sure we are not simply highlighting within a word
+            if text[pos - 1: pos] == " " and \
+               text[pos + len(word):pos + len(word) + 1] == " " or \
+               pos == 0 and text[pos + len(word):pos + len(word) + 1] == " " \
+               or pos + len(word) == len(text) and text[pos - 1: pos] == " ":
+                self.setFormat(pos, len(word), f)
+            pos = text.find(word, pos + 1)
+
 
 
 class Game(QWidget, Ui_Game):
@@ -81,6 +93,10 @@ class Game(QWidget, Ui_Game):
         self._startTime = QTime.currentTime()
         self._testLexicalForm = parent.comboBox_testLexicalForm.currentIndex()\
                                 == 1
+        self._lessThan = parent.checkBox_lessThanOccurences.isChecked() * \
+                         int(parent.comboBox_lessThanOccurences.currentText())
+        self._moreThan = parent.checkBox_moreThanOccurences.isChecked() * \
+                         int(parent.comboBox_moreThanOccurences.currentText())
 
         # Internal lists
         self._words = []            # Words as in the text
@@ -151,7 +167,8 @@ class Game(QWidget, Ui_Game):
     def undoGuess(self, item=None):
         "The user wants to undo a guess."
         i = self.listWidget_guesses.currentRow()
-        if i != -1:
+        i -= len(self._tooHard)
+        if i >= 0:
             self._alreadyGuessed.pop(i)
             self.populateLists()
 
@@ -222,6 +239,19 @@ class Game(QWidget, Ui_Game):
                 self._strongs.append(s)
                 self._grammars.append(g)
 
+        self._tooHard = []
+        self._tooEasy = []
+        if self._lessThan or self._moreThan:
+            for i in range(len(self._strongs)):
+                n = self.BibleLoader.numberOfOccurence(self._strongs[i])
+                #print(self._words[i], n)
+                if self._lessThan and n > self._lessThan:
+                    # The word is too easy (appears many time)
+                    self._tooEasy.append(i)
+                if self._moreThan and n < self._moreThan:
+                    # The word is too hard (appreas little time)
+                    self._tooHard.append(i)
+
         # Generate _lexicals (lexical forms of words)
         for i in self._strongs:
             u = self.StrongParser.getGreekUnicode(int(i))
@@ -242,7 +272,8 @@ class Game(QWidget, Ui_Game):
         self.populateListTranslation()
         self.populateListGuesses()
         self._highlighter.rehighlight()
-        if len(self._alreadyGuessed) == len(self._words):
+        if len(self._alreadyGuessed) + len(self._tooEasy) + len(self._tooHard)\
+           == len(self._words):
             self.pushButton_Validate.setEnabled(True)
         else:
             self.pushButton_Validate.setEnabled(False)
@@ -259,9 +290,10 @@ class Game(QWidget, Ui_Game):
         else:
             theList = self._words
 
-        for i in theList:
-            if not self.alreadyGuessedWord(self.toID(i)):
-                self.listWidget_original.addItem(str(i))
+        for i in range(len(theList)):
+            if not self.alreadyGuessedWord(i) and not i in self._tooHard \
+               and not i in self._tooEasy:
+                self.listWidget_original.addItem(theList[i])
 
         self.setListMaximumWidth(self.listWidget_original)
 
@@ -282,18 +314,29 @@ class Game(QWidget, Ui_Game):
         """
         self.listWidget_translation.clear()
         for i in range(len(self._definitions)):
-            if not self.alreadyGuessedDefinition(i):
+            if not self.alreadyGuessedDefinition(i) and not i in self._tooHard \
+               and not i in self._tooEasy:
                 self.listWidget_translation.addItem(self._definitions[i])
         self.setListMaximumWidth(self.listWidget_translation)
 
     def populateListGuesses(self):
         "Populates the list of guesses already made."
         self.listWidget_guesses.clear()
+
+        if self._testLexicalForm:
+            theList = self._lexicals
+        else:
+            theList = self._words
+
+        for i in self._tooHard:
+            t1 = theList[i]
+            t2 = self._definitions[i]
+            item = QListWidgetItem(t1 + " → " + t2)
+            item.setForeground(QColor("blue"))
+            self.listWidget_guesses.addItem(item)
+
         for (i, j) in self._alreadyGuessed:
-            if self._testLexicalForm:
-                t1 = self._lexicals[i]
-            else:
-                t1 = self._words[i]
+            t1 = theList[i]
             t2 = self._definitions[j]
             self.listWidget_guesses.addItem(t1 + " → " + t2)
 

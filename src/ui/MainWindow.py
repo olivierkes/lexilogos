@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'MainWindow.ui'
 #
-# Created: Sun Jun 16 17:38:15 2013
+# Created: Wed Jun 19 13:40:56 2013
 #      by: PyQt4 UI code generator 4.10.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -157,7 +157,6 @@ class Ui_MainWindow(object):
         self.formLayout_2.setWidget(1, QtGui.QFormLayout.FieldRole, self.comboBox_lexiconVersion)
         self.verticalLayout_7.addWidget(self.groupBox_4)
         self.groupBox_2 = QtGui.QGroupBox(self.widget)
-        self.groupBox_2.setEnabled(False)
         self.groupBox_2.setFlat(False)
         self.groupBox_2.setObjectName(_fromUtf8("groupBox_2"))
         self.verticalLayout_5 = QtGui.QVBoxLayout(self.groupBox_2)
@@ -173,10 +172,20 @@ class Ui_MainWindow(object):
         self.comboBox_lessThanOccurences = QtGui.QComboBox(self.groupBox_2)
         self.comboBox_lessThanOccurences.setEditable(True)
         self.comboBox_lessThanOccurences.setObjectName(_fromUtf8("comboBox_lessThanOccurences"))
+        self.comboBox_lessThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_lessThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_lessThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_lessThanOccurences.addItem(_fromUtf8(""))
         self.gridLayout.addWidget(self.comboBox_lessThanOccurences, 0, 1, 1, 1)
         self.comboBox_moreThanOccurences = QtGui.QComboBox(self.groupBox_2)
         self.comboBox_moreThanOccurences.setEditable(True)
         self.comboBox_moreThanOccurences.setObjectName(_fromUtf8("comboBox_moreThanOccurences"))
+        self.comboBox_moreThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_moreThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_moreThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_moreThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_moreThanOccurences.addItem(_fromUtf8(""))
+        self.comboBox_moreThanOccurences.addItem(_fromUtf8(""))
         self.gridLayout.addWidget(self.comboBox_moreThanOccurences, 1, 1, 1, 1)
         self.verticalLayout_5.addLayout(self.gridLayout)
         self.label_5 = QtGui.QLabel(self.groupBox_2)
@@ -215,5 +224,15 @@ class Ui_MainWindow(object):
         self.groupBox_2.setTitle(_translate("MainWindow", "Only words with:", None))
         self.checkBox_moreThanOccurences.setText(_translate("MainWindow", "more than", None))
         self.checkBox_lessThanOccurences.setText(_translate("MainWindow", "less than", None))
+        self.comboBox_lessThanOccurences.setItemText(0, _translate("MainWindow", "500", None))
+        self.comboBox_lessThanOccurences.setItemText(1, _translate("MainWindow", "1000", None))
+        self.comboBox_lessThanOccurences.setItemText(2, _translate("MainWindow", "1500", None))
+        self.comboBox_lessThanOccurences.setItemText(3, _translate("MainWindow", "2000", None))
+        self.comboBox_moreThanOccurences.setItemText(0, _translate("MainWindow", "10", None))
+        self.comboBox_moreThanOccurences.setItemText(1, _translate("MainWindow", "20", None))
+        self.comboBox_moreThanOccurences.setItemText(2, _translate("MainWindow", "30", None))
+        self.comboBox_moreThanOccurences.setItemText(3, _translate("MainWindow", "50", None))
+        self.comboBox_moreThanOccurences.setItemText(4, _translate("MainWindow", "70", None))
+        self.comboBox_moreThanOccurences.setItemText(5, _translate("MainWindow", "100", None))
         self.label_5.setText(_translate("MainWindow", "occurences in the NT.", None))
 

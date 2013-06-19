@@ -162,3 +162,16 @@ class BibleLoader():
     def numberOfVerse(self, bookNumber, chapterNumber):
         "Returns the number of verse in the chapter of given numbers."
         return len(self._books[bookNumber][chapterNumber])
+
+###############################################################################
+# Stats
+###############################################################################
+
+    def numberOfOccurence(self, strongNumber):
+        n = 0
+        for b in self._books:
+            for c in b:
+                for v in c:
+                    if " " + strongNumber + " " in v:
+                        n += 1
+        return n

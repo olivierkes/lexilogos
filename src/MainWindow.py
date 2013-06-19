@@ -15,7 +15,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Hide some stuff
-        self.pushButton_moreOptions.setChecked(False)
+        self.pushButton_moreOptions.setChecked(True)
 
         # Loads Bible
         self.BibleLoader = BibleLoader("BP05FNL")
