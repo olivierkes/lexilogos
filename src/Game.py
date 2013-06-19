@@ -50,8 +50,8 @@ class myHighlighter(QSyntaxHighlighter):
             word = self._game._words[i]
             self.highlightWord(text, word, f)
 
-
     def highlightWord(self, text, word, f):
+        "Highligt all occurences of 'word' in 'text' with the format 'f'."
         pos = text.find(word)
         while pos >= 0:
             # We get sure we are not simply highlighting within a word
@@ -61,7 +61,6 @@ class myHighlighter(QSyntaxHighlighter):
                or pos + len(word) == len(text) and text[pos - 1: pos] == " ":
                 self.setFormat(pos, len(word), f)
             pos = text.find(word, pos + 1)
-
 
 
 class Game(QWidget, Ui_Game):
@@ -192,15 +191,32 @@ class Game(QWidget, Ui_Game):
             else:
                 start = -1
 
-        #FIXME: we have a problem here in some cases
-        # Example: Mt 7, 1-2, depending on the order you chose solutions...
-
         # It's possible that the same definition appears more than once.
         # If that's the case, we apply the correct one.
         if self._definitions[IDi] == self._definitions[IDj]:
             IDj = IDi
 
         self._alreadyGuessed.append((IDi, IDj))
+
+        # When there are multiple identical definitions, we might have to do
+        # some adjustements.
+        # For exemple, if we have:
+        #  0:   word0    some definition
+        #  1:   word1    some other definition
+        #  2:   word2    some other definition    (identical to the last one)
+        # If _alreadyGuessed is [(0, 1), (1, 1)] we need to adjust it to:
+        #                      [(0, 2), (1, 1)]
+        Tj = [j for (i, j) in self._alreadyGuessed]
+        for k in range(len(self._alreadyGuessed)):
+            i = self._alreadyGuessed[k][0]
+            j = self._alreadyGuessed[k][1]
+            if i != j and Tj.count(j) > 1:
+                for p in range(len(self._definitions)):
+                    if not p in Tj and \
+                       self._definitions[p] == self._definitions[j]:
+                        r = p
+                        break
+                self._alreadyGuessed[k] = (i, r)
 
         # Makes it visible to the user
         self.populateLists()
