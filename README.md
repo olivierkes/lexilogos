@@ -1,10 +1,12 @@
 Lexilogos
 =========
 
-Lexilogos is an app to learn biblical vocabulary. It is based on the Albina System, 
-a language learning technique that helps you learn vocabulary while you read for pleasure.
+Lexilogos is an app to learn greek vocabulary while reading the New Testamant.
 
 ![Screenshot](https://raw.github.com/olivierkes/lexilogos/master/img/screenshot_1.png)
+
+It is based on the Albina System, a language learning technique that helps you learn vocabulary
+while you read for pleasure.
 
 Learn more about the Albina system here: http://www.amnet.net.au/~dnisbet/matchups/home.html
 
