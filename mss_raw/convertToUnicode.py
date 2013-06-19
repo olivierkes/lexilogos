@@ -15,7 +15,7 @@ import sys, os, re
 def transliterate(text):
 
     symbol = "abcdefghijklmnopqrstuvwxyz"
-    unicod = "αβχδεφγηιϕκλμνοπθρστυςωξψζ"
+    unicod = "αβχδεφγηιϕκλμνοπψρστυςωξθζ"
 
     translit = ""
 
