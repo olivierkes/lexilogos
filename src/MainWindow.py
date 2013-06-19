@@ -12,6 +12,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
 
+        self._version = 0.1
+
         # user interface configuration.
         self.setupUi(self)
 

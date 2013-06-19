@@ -123,7 +123,6 @@ class BibleLoader():
 
         for i in bookorder:
             if i in bookcode:
-                print(i, bookcode)
                 return bookorder.index(i)
 
         print("ERROR: the bookcode is invalid.")
